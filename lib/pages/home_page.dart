@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:news/data/news_services.dart';
 import 'package:news/models/articles.dart';
-
-import 'content_news.dart';
+import 'package:news/pages/content_news.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
