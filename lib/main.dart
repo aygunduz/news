@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:news/data/news_services.dart';
 import 'package:news/models/articles.dart';
 import 'package:news/pages/home_page.dart';
 
@@ -35,18 +34,15 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Articles> articles = [];
 
   @override
-  void initState() {
-    NewsService.getNews().then((value) {
-      setState(() {
-        articles = value!;
-      });
-    });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      theme: ThemeData(
+        canvasColor: Colors.red[300],
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme:
+            AppBarTheme(backgroundColor: Colors.red, centerTitle: true),
+      ),
       home: HomePage(),
     );
   }

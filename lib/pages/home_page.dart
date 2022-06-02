@@ -19,14 +19,28 @@ class _HomePageState extends State<HomePage> {
   var newpagetitle;
   var newpagedescription;
   var newpagecontent;
-  @override
-  void initState() {
-    NewsService.getNews().then((value) {
+
+  int listeneneleman = 0;
+
+  void GeneralNews() {
+    NewsService.getGeneralNews(listeneneleman).then((value) {
       setState(() {
         articles = value!;
       });
     });
+  }
+
+// First start page
+  void initState() {
     super.initState();
+    GeneralNews();
+  }
+
+// Delete last page
+  @override
+  void deactivate() {
+    GeneralNews();
+    super.deactivate();
   }
 
   @override
@@ -65,12 +79,14 @@ class _HomePageState extends State<HomePage> {
               color: Color(0xFFB02407)),
           child: Column(
             children: [
+              //Image
               Expanded(
                 flex: 9,
                 child: Image.network(
                   "https://news.files.bbci.co.uk/ws/img/logos/og/turkce.png",
                 ),
               ),
+              // Image Text
               Container(
                 constraints: BoxConstraints(minWidth: 0, maxWidth: 350),
                 width: 350,
@@ -84,39 +100,96 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         )),
+        //Anasayfa
         ListTile(
+          onTap: () {
+            setState(() {
+              listeneneleman = 0;
+              deactivate();
+              initState();
+            });
+          },
           leading: Icon(Icons.home),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text(
             "Anasayfa",
           ),
-        ), //Anasayfa
+        ),
+        //Spor
         ListTile(
+          onTap: () {
+            setState(() {
+              listeneneleman = 1;
+              print(listeneneleman);
+              deactivate();
+              initState();
+            });
+          },
           leading: Icon(Icons.directions_run),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Spor"),
-        ), // Spor
+        ),
+        // Finans
         ListTile(
+          onTap: () {
+            setState(() {
+              listeneneleman = 2;
+              deactivate();
+              initState();
+            });
+          },
           leading: Icon(Icons.timeline),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Finans"),
-        ), // Finans
+        ),
+        //Bilim
         ListTile(
+          onTap: () {
+            setState(() {
+              listeneneleman = 3;
+              deactivate();
+              initState();
+            });
+          },
           leading: Icon(Icons.settings_input_antenna),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Bilim"),
         ),
+        //Teknoloji
         ListTile(
+          onTap: () {
+            setState(() {
+              listeneneleman = 4;
+              deactivate();
+              initState();
+            });
+          },
           leading: Icon(Icons.devices_other),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Teknoloji"),
         ),
+        //Sağlık
         ListTile(
+          onTap: () {
+            setState(() {
+              listeneneleman = 5;
+              deactivate();
+              initState();
+            });
+          },
           leading: Icon(Icons.healing),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Sağlık"),
         ),
+        // Eğlence
         ListTile(
+          onTap: () {
+            setState(() {
+              listeneneleman = 6;
+              deactivate();
+              initState();
+            });
+          },
           leading: Icon(Icons.mood),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Eğlence"),
@@ -125,6 +198,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  //
+  // List elemanlarını içerik sayfasına yönlendirme!
   GestureDetector methodListTile(int index) {
     return GestureDetector(
       onTap: () {
