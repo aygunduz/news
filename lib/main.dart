@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
-        canvasColor: Colors.red[300],
+        canvasColor: Colors.red,
         scaffoldBackgroundColor: Colors.black,
         appBarTheme:
             AppBarTheme(backgroundColor: Colors.red, centerTitle: true),

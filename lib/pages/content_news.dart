@@ -27,6 +27,7 @@ class ContentNews extends StatelessWidget {
       ),
       body: WebView(
         initialUrl: url,
+        zoomEnabled: true,
       ),
     );
   }

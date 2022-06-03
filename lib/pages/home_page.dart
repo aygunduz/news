@@ -19,9 +19,8 @@ class _HomePageState extends State<HomePage> {
   var newpagetitle;
   var newpagedescription;
   var newpagecontent;
-
   int listeneneleman = 0;
-
+  Color? tilecolor = Colors.red;
   void GeneralNews() {
     NewsService.getGeneralNews(listeneneleman).then((value) {
       setState(() {
@@ -48,6 +47,7 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         drawer: Drawer(
+          backgroundColor: Colors.black38,
           child: buildDrawer(),
         ),
         appBar: AppBar(
@@ -57,12 +57,14 @@ class _HomePageState extends State<HomePage> {
           itemCount: articles.length,
           itemBuilder: (BuildContext context, int index) {
             return Card(
+                color: Colors.black,
+                margin: EdgeInsets.only(left: 8, right: 8, bottom: 15),
                 child: Column(
-              children: [
-                Image.network(articles[index].urlToImage.toString()),
-                methodListTile(index)
-              ],
-            ));
+                  children: [
+                    Image.network(articles[index].urlToImage.toString()),
+                    methodListTile(index)
+                  ],
+                ));
           },
         ),
       ),
@@ -100,6 +102,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         )),
+
         //Anasayfa
         ListTile(
           onTap: () {
@@ -109,26 +112,30 @@ class _HomePageState extends State<HomePage> {
               initState();
             });
           },
+          tileColor: (listeneneleman == 0 ? Colors.redAccent : tilecolor),
           leading: Icon(Icons.home),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text(
             "Anasayfa",
+            style: TextStyle(),
           ),
         ),
+
         //Spor
         ListTile(
           onTap: () {
             setState(() {
               listeneneleman = 1;
-              print(listeneneleman);
               deactivate();
               initState();
             });
           },
+          tileColor: (listeneneleman == 1 ? Colors.redAccent : tilecolor),
           leading: Icon(Icons.directions_run),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Spor"),
         ),
+
         // Finans
         ListTile(
           onTap: () {
@@ -138,10 +145,12 @@ class _HomePageState extends State<HomePage> {
               initState();
             });
           },
+          tileColor: (listeneneleman == 2 ? Colors.redAccent : tilecolor),
           leading: Icon(Icons.timeline),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Finans"),
         ),
+
         //Bilim
         ListTile(
           onTap: () {
@@ -151,10 +160,12 @@ class _HomePageState extends State<HomePage> {
               initState();
             });
           },
+          tileColor: (listeneneleman == 3 ? Colors.redAccent : tilecolor),
           leading: Icon(Icons.settings_input_antenna),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Bilim"),
         ),
+
         //Teknoloji
         ListTile(
           onTap: () {
@@ -164,10 +175,12 @@ class _HomePageState extends State<HomePage> {
               initState();
             });
           },
+          tileColor: (listeneneleman == 4 ? Colors.redAccent : tilecolor),
           leading: Icon(Icons.devices_other),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Teknoloji"),
         ),
+
         //Sağlık
         ListTile(
           onTap: () {
@@ -177,10 +190,12 @@ class _HomePageState extends State<HomePage> {
               initState();
             });
           },
+          tileColor: (listeneneleman == 5 ? Colors.redAccent : tilecolor),
           leading: Icon(Icons.healing),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Sağlık"),
         ),
+
         // Eğlence
         ListTile(
           onTap: () {
@@ -190,6 +205,7 @@ class _HomePageState extends State<HomePage> {
               initState();
             });
           },
+          tileColor: (listeneneleman == 6 ? Colors.redAccent : tilecolor),
           leading: Icon(Icons.mood),
           visualDensity: VisualDensity(horizontal: 4),
           title: Text("Eğlence"),
@@ -216,9 +232,26 @@ class _HomePageState extends State<HomePage> {
           url: newpageurl,
         ));
       },
-      child: ListTile(
-        title: Text(articles[index].title.toString()),
-        subtitle: Text(articles[index].author.toString()),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.blueGrey[200],
+        ),
+        child: ListTile(
+          title: Text(
+            articles[index].title.toString(),
+            style: TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+                fontSize: 23),
+          ),
+          subtitle: Text(
+            articles[index].author.toString(),
+            style:
+                TextStyle(color: Colors.red[900], fontWeight: FontWeight.bold),
+            textAlign: TextAlign.right,
+          ),
+        ),
       ),
     );
   }
