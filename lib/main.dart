@@ -37,6 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         canvasColor: Colors.red,
         scaffoldBackgroundColor: Colors.black,
