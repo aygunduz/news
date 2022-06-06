@@ -6,14 +6,6 @@ import '../models/articles.dart';
 import '../models/news.dart';
 
 class NewsService {
-  static NewsService _singleton = NewsService._internal();
-  NewsService._internal();
-
-  factory NewsService() {
-    return _singleton;
-  }
-
-  //Top-headlines api
   static Future<List<Articles>?> getGeneralNews(listindex) async {
     List<String> urllist = [
       'http://newsapi.org/v2/top-headlines?country=tr&category=general&apiKey=f58b94449b4f45b9844a296497a93747',
