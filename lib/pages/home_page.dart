@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../data/news_services.dart';
 import '../models/articles.dart';
+import '../models/choose_city.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,6 +19,9 @@ class _HomePageState extends State<HomePage> {
   List<Articles> articles = [];
   int listeneneleman = 0;
   Color? tilecolor = Colors.red;
+  String chooseCity = "";
+  double? temp;
+  List<String> city = City().city;
 
   void GeneralNews() {
     NewsService.getGeneralNews(listeneneleman).then((value) {
@@ -46,6 +50,43 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         body: Column(
           children: [
+            //Weather Menu
+            Expanded(
+                flex: 2,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //CHOOSE CITY
+                      DropdownButton(
+                        dropdownColor: Colors.white,
+                        hint: Text(
+                          "Bir Şehir Seçiniz",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        value: chooseCity.isNotEmpty ? chooseCity : null,
+                        onChanged: (newValue) {
+                          setState(() {
+                            chooseCity = newValue.toString();
+                            print(chooseCity);
+                          });
+                        },
+                        items: city.map((value) {
+                          return DropdownMenuItem(
+                              value: value, child: Text(value));
+                        }).toList(),
+                      ),
+                      //DEGREE
+                      Text("35", style: TextStyle(color: Colors.black)),
+                      //DURUM
+                      Text("GÜNEŞLİ", style: TextStyle(color: Colors.black)),
+                      //ICON
+                      Icon(Icons.cloud, color: Colors.black),
+                    ],
+                  ),
+                )),
             //Content Menu
             Expanded(
               flex: 27,
@@ -119,7 +160,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  ///////////
   // List elemanlarını içerik sayfasına yönlendirme!
   GestureDetector methodListTile(int index) {
     return GestureDetector(
