@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:news/data/weather_services.dart';
+import 'package:news/models/weather.dart';
 import 'package:news/pages/content_news.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -17,14 +19,23 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Articles> articles = [];
-  int listeneneleman = 0;
-  Color? tilecolor = Colors.red;
+  int pageIndex = 0;
+  Color? tileColor = Colors.red;
   String chooseCity = "";
-  double? temp;
   List<String> city = City().city;
+  WeatherServices client = WeatherServices();
+  Weather weather = Weather();
+  /*
+  void getData() async {
+    weather = (await client.getCurrentWeather(chooseCity))!;
+  }
+*/
+  Future<void> getData() async {
+    weather = (await client.getCurrentWeather(chooseCity))!;
+  }
 
   void GeneralNews() {
-    NewsService.getGeneralNews(listeneneleman).then((value) {
+    NewsService.getGeneralNews(pageIndex).then((value) {
       setState(() {
         articles = value!;
       });
@@ -67,18 +78,28 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(color: Colors.black),
                         ),
                         value: chooseCity.isNotEmpty ? chooseCity : null,
-                        onChanged: (newValue) {
+                        items: city.map((items) {
+                          return DropdownMenuItem(
+                              value: items, child: Text(items));
+                        }).toList(),
+                        onChanged: (String? newValue) {
                           setState(() {
-                            chooseCity = newValue.toString();
-                            print(chooseCity);
+                            chooseCity = newValue!;
+                            getData(chooseCity);
                           });
                         },
-                        items: city.map((value) {
-                          return DropdownMenuItem(
-                              value: value, child: Text(value));
-                        }).toList(),
                       ),
                       //DEGREE
+                      FutureBuilder(
+                          future: getData(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.done) {
+                              return Text("${weather.temp}",
+                                  style: TextStyle(color: Colors.black));
+                            }
+                            return Container();
+                          }),
                       Text("35", style: TextStyle(color: Colors.black)),
                       //DURUM
                       Text("GÜNEŞLİ", style: TextStyle(color: Colors.black)),
@@ -146,12 +167,12 @@ class _HomePageState extends State<HomePage> {
     return ListTile(
       onTap: () {
         setState(() {
-          listeneneleman = eleman;
+          pageIndex = eleman;
           deactivate();
           initState();
         });
       },
-      tileColor: (listeneneleman == eleman ? Colors.redAccent : tilecolor),
+      tileColor: (pageIndex == eleman ? Colors.redAccent : tileColor),
       title: Text(
         "$string",
         textAlign: TextAlign.center,
@@ -162,6 +183,7 @@ class _HomePageState extends State<HomePage> {
 
   // List elemanlarını içerik sayfasına yönlendirme!
   GestureDetector methodListTile(int index) {
+    // Basıldığında yapılan işlem
     return GestureDetector(
       onTap: () {
         Get.to(ContentNews(
@@ -189,6 +211,7 @@ class _HomePageState extends State<HomePage> {
                 margin: EdgeInsets.only(top: 18),
                 width: 85,
                 height: 30,
+                // SHARE BUTTON
                 child: FloatingActionButton.extended(
                   backgroundColor: Colors.green,
                   onPressed: () {
@@ -205,11 +228,13 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              Text(
-                articles[index].author.toString(),
-                style: TextStyle(
-                    color: Colors.red[900], fontWeight: FontWeight.bold),
-                textAlign: TextAlign.right,
+              Flexible(
+                child: Text(
+                  articles[index].author.toString(),
+                  style: TextStyle(
+                      color: Colors.red[900], fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.right,
+                ),
               ),
             ],
           ),
