@@ -1,3 +1,4 @@
+
 # Miscellaneous
 *.class
 *.log
@@ -44,3 +45,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+#In your gitignore file, add the path to your secrets file below
+/lib/apikeys/apikeys.dart

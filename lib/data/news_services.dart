@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:news/apikeys/apikeys.dart';
 
 import '../models/articles.dart';
 import '../models/news.dart';
@@ -8,13 +9,13 @@ import '../models/news.dart';
 class NewsService {
   static Future<List<Articles>?> getGeneralNews(listindex) async {
     List<String> urllist = [
-      'http://newsapi.org/v2/top-headlines?country=tr&category=general&apiKey=f58b94449b4f45b9844a296497a93747',
-      'https://newsapi.org/v2/top-headlines?country=tr&category=sports&apiKey=eb64973028fd45088b646d50de91bc0b',
-      "https://newsapi.org/v2/top-headlines?country=tr&category=business&apiKey=eb64973028fd45088b646d50de91bc0b",
-      "https://newsapi.org/v2/top-headlines?country=tr&category=science&apiKey=eb64973028fd45088b646d50de91bc0b",
-      "https://newsapi.org/v2/top-headlines?country=tr&category=technology&apiKey=eb64973028fd45088b646d50de91bc0b",
-      "https://newsapi.org/v2/top-headlines?country=tr&category=health&apiKey=eb64973028fd45088b646d50de91bc0b",
-      "https://newsapi.org/v2/top-headlines?country=tr&category=entertainment&apiKey=eb64973028fd45088b646d50de91bc0b",
+      'http://newsapi.org/v2/top-headlines?country=tr&category=general&apiKey=$newsApiKey',
+      'https://newsapi.org/v2/top-headlines?country=tr&category=sports&apiKey=$newsApiKey',
+      "https://newsapi.org/v2/top-headlines?country=tr&category=business&apiKey=$newsApiKey",
+      "https://newsapi.org/v2/top-headlines?country=tr&category=science&apiKey=$newsApiKey",
+      "https://newsapi.org/v2/top-headlines?country=tr&category=technology&apiKey=$newsApiKey",
+      "https://newsapi.org/v2/top-headlines?country=tr&category=health&apiKey=$newsApiKey",
+      "https://newsapi.org/v2/top-headlines?country=tr&category=entertainment&apiKey=e$newsApiKey",
     ];
     final Uri url = Uri.parse(urllist[listindex]);
 

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:news/data/weather_services.dart';
 import 'package:news/models/weather.dart';
 import 'package:news/pages/content_news.dart';
@@ -25,16 +26,19 @@ class _HomePageState extends State<HomePage> {
   List<String> city = City().city;
   WeatherServices client = WeatherServices();
   Weather weather = Weather();
-  /*
-  void getData() async {
-    weather = (await client.getCurrentWeather(chooseCity))!;
-  }
-*/
+  //Save City for Reload;
+  final dataCity = GetStorage();
+
+  //Weather getData
   Future<void> getData() async {
-    weather = (await client.getCurrentWeather(chooseCity))!;
+    var _weather = (await client.getCurrentWeather(chooseCity))!;
+    setState(() {
+      weather = _weather;
+    });
   }
 
-  void GeneralNews() {
+  // News getData
+  void generalNews() {
     NewsService.getGeneralNews(pageIndex).then((value) {
       setState(() {
         articles = value!;
@@ -42,17 +46,16 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-// First start page
+  // First start page
+  @override
   void initState() {
     super.initState();
-    GeneralNews();
-  }
-
-// Delete last page
-  @override
-  void deactivate() {
-    GeneralNews();
-    super.deactivate();
+    generalNews();
+    if (dataCity.read("city") != null) {
+      chooseCity = dataCity.read("city");
+      getData();
+    }
+    print("$chooseCity");
   }
 
   @override
@@ -66,47 +69,13 @@ class _HomePageState extends State<HomePage> {
                 flex: 2,
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  color: Colors.white,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      //CHOOSE CITY
-                      DropdownButton(
-                        dropdownColor: Colors.white,
-                        hint: Text(
-                          "Bir Şehir Seçiniz",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        value: chooseCity.isNotEmpty ? chooseCity : null,
-                        items: city.map((items) {
-                          return DropdownMenuItem(
-                              value: items, child: Text(items));
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            chooseCity = newValue!;
-                            getData(chooseCity);
-                          });
-                        },
-                      ),
-                      //DEGREE
-                      FutureBuilder(
-                          future: getData(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              return Text("${weather.temp}",
-                                  style: TextStyle(color: Colors.black));
-                            }
-                            return Container();
-                          }),
-                      Text("35", style: TextStyle(color: Colors.black)),
-                      //DURUM
-                      Text("GÜNEŞLİ", style: TextStyle(color: Colors.black)),
-                      //ICON
-                      Icon(Icons.cloud, color: Colors.black),
-                    ],
-                  ),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [Colors.blueAccent, Colors.yellowAccent],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight),
+                      borderRadius: BorderRadius.circular(20)),
+                  child: buildWeather(),
                 )),
             //Content Menu
             Expanded(
@@ -119,7 +88,10 @@ class _HomePageState extends State<HomePage> {
                       margin: EdgeInsets.only(left: 8, right: 8, bottom: 15),
                       child: Column(
                         children: [
-                          Image.network(articles[index].urlToImage.toString()),
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                  articles[index].urlToImage.toString())),
                           methodListTile(index)
                         ],
                       ));
@@ -162,14 +134,51 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  //Slider Mengu
+  Row buildWeather() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        //CHOOSE CITY
+        DropdownButton(
+          dropdownColor: Colors.white,
+          hint: Text(
+            "Bir Şehir Seçiniz",
+            style: TextStyle(color: Colors.white),
+          ),
+          value: chooseCity.isNotEmpty ? chooseCity : null,
+          items: city.map((items) {
+            return DropdownMenuItem(value: items, child: Text(items));
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              chooseCity = newValue!;
+              dataCity.write("city", chooseCity);
+            });
+            getData();
+          },
+        ),
+        //DEGREE
+        Text((weather.temp == null ? " " : "${weather.temp?.toInt()}°C "),
+            style: TextStyle(color: Colors.black)),
+        //DURUM
+        Flexible(
+          child: Text(
+              (weather.description == null
+                  ? " "
+                  : "${weather.description?.toUpperCase()}"),
+              style: TextStyle(color: Colors.black, fontSize: 12)),
+        ),
+      ],
+    );
+  }
+
+  //Slider Menu
   ListTile buildListTile(int eleman, String string) {
     return ListTile(
       onTap: () {
         setState(() {
           pageIndex = eleman;
-          deactivate();
-          initState();
+          generalNews();
         });
       },
       tileColor: (pageIndex == eleman ? Colors.redAccent : tileColor),
